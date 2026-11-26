@@ -1,0 +1,146 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// 1. Class Khach Hang
+class KhachHang {
+private:
+    string maKH;
+    string tenKH;
+    string sdt;
+
+public:
+    void nhap() {
+        cout << "Nhap ma khach hang: ";
+        getline(cin, maKH);
+        cout << "Nhap ten khach hang: ";
+        getline(cin, tenKH);
+        cout << "Nhap so dien thoai: ";
+        getline(cin, sdt);
+    }
+
+    void xuat() {
+        cout << "Ma KH      : " << maKH << endl;
+        cout << "Khach hang : " << tenKH << " - SDT: " << sdt << endl;
+    }
+};
+
+// 2. Class Mat Hang
+class MatHang {
+private:
+    string maHang;
+    string tenHang;
+    int soLuong;
+    double donGia;
+
+public:
+    void nhap() {
+        cout << "Ma mat hang: ";
+        getline(cin, maHang);
+        cout << "Ten mat hang: ";
+        getline(cin, tenHang);
+        cout << "So luong: ";
+        cin >> soLuong;
+        cout << "Don gia: ";
+        cin >> donGia;
+        cin.ignore(); // Xoa bo nho dem sau khi nhap so
+    }
+
+    double tinhThanhTien() {
+        return soLuong * donGia;
+    }
+
+    void xuat(int stt) {
+        cout << stt << "\t" 
+             << maHang << "\t\t" 
+             << tenHang << "\t\t" 
+             << soLuong << "\t" 
+             << (long long)donGia << "\t\t" 
+             << (long long)tinhThanhTien() << endl;
+    }
+};
+
+// 3. Class Hoa Don
+class HoaDon {
+private:
+    string maHD;
+    string ngayLap;
+    KhachHang khach;
+    MatHang dsHang[100];
+    int soMatHang;
+    double tienKhachDua;
+
+public:
+    void nhap() {
+        cout << "=== NHAP THONG TIN HOA DON ===" << endl;
+        cout << "Nhap ma hoa don: ";
+        getline(cin, maHD);
+        cout << "Nhap ngay lap (dd/mm/yyyy): ";
+        getline(cin, ngayLap);
+
+        cout << "\n--- Thong tin khach hang ---" << endl;
+        khach.nhap();
+
+        cout << "\nNhap so loai mat hang khach mua: ";
+        cin >> soMatHang;
+        cin.ignore(); // Xoa bo nho dem truoc khi nhap chuoi trong vong lap
+
+        for (int i = 0; i < soMatHang; i++) {
+            cout << "\n--- Nhap mat hang thu " << i + 1 << " ---" << endl;
+            dsHang[i].nhap();
+        }
+
+        double tong = tinhTongTien();
+        cout << "\nTong tien hoa don: " << (long long)tong << " VND" << endl;
+        do {
+            cout << "Nhap tien khach dua: ";
+            cin >> tienKhachDua;
+            if (tienKhachDua < tong) {
+                cout << "Tien khach dua khong du, vui long nhap lai!\n";
+            }
+        } while (tienKhachDua < tong);
+    }
+
+    double tinhTongTien() {
+        double tong = 0;
+        for (int i = 0; i < soMatHang; i++) {
+            tong += dsHang[i].tinhThanhTien();
+        }
+        return tong;
+    }
+
+    void xuat() {
+        double tong = tinhTongTien();
+        double tienThua = tienKhachDua - tong;
+
+        cout << "\n\n==================================================================" << endl;
+        cout << "\t\t\tHOA DON BAN HANG" << endl;
+        cout << "==================================================================" << endl;
+        cout << "Ma HD      : " << maHD << "\t\tNgay lap: " << ngayLap << endl;
+        khach.xuat();
+        cout << "------------------------------------------------------------------" << endl;
+
+        cout << "STT\tMa hang\t\tTen mat hang\t\tSL\tDon gia\t\tThanh tien" << endl;
+        cout << "------------------------------------------------------------------" << endl;
+
+        for (int i = 0; i < soMatHang; i++) {
+            dsHang[i].xuat(i + 1);
+        }
+
+        cout << "------------------------------------------------------------------" << endl;
+        cout << "\t\t\t\t\tTONG CONG     : " << (long long)tong << " VND" << endl;
+        cout << "\t\t\t\t\tTIEN KHACH DUA: " << (long long)tienKhachDua << " VND" << endl;
+        cout << "\t\t\t\t\tTIEN THUA     : " << (long long)tienThua << " VND" << endl;
+        cout << "==================================================================" << endl;
+        cout << "\t\tCam on quy khach va hen gap lai!" << endl;
+    }
+};
+
+int main() {
+    HoaDon hd;
+    hd.nhap();
+    hd.xuat();
+
+    return 0;
+}
